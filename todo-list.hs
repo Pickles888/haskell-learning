@@ -3,7 +3,9 @@ main = run [] []
 
 data Command = Add String | Remove Int | Complete Int | Uncomplete Int | Exit | None
 
-run :: [Int] -> [(Int, String)] -> IO ()
+type Todo = [(Int, String)]
+
+run :: [Int] -> Todo -> IO ()
 run c xs = do
   putStr $ display (complete c) xs
   command <- parse . words <$> getLine
@@ -15,7 +17,7 @@ run c xs = do
     Exit -> mempty
     None -> run c xs
 
-add :: String -> [(Int, String)] -> [(Int, String)]
+add :: String -> Todo -> Todo
 add s [] = [(1, s)]
 add s xs = xs ++ [(fst (last xs) + 1, s)]
 
@@ -33,7 +35,7 @@ parse (a : b : xs) =
         "uc" -> Uncomplete numB
         _ -> None
 
-display :: (Int -> Bool) -> [(Int, String)] -> String
+display :: (Int -> Bool) -> Todo -> String
 display f = unlines . map (\(a, b) -> show a ++ showC (f a) ++ b)
   where
     showC bool = if bool then " [X] " else " [ ] "
