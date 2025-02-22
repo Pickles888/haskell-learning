@@ -1,3 +1,16 @@
+import System.Environment qualified as Env
+
+main :: IO ()
+main = do
+  num <- read . head <$> Env.getArgs
+  mapM_ (putStrLn . toStr)
+    $ take num
+      . isAddTwo
+    $ getPair primes
+
+toStr :: (Show a) => (a, a) -> String
+toStr (a, b) = show a ++ ", " ++ show b
+
 getPair :: [a] -> [(a, a)]
 getPair [] = []
 getPair [x] = []
